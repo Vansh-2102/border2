@@ -1,0 +1,27 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Data and snapshots
+ml_engine/data/
+data/
+
+# Model weights
+*.pt
+ml_engine/weights/
+weights/
+
+# Reports
+ml_engine/data/reports/
+
+# IDE files
+.vscode/
+.idea/
+.trae/
+*.swp
+
+# Environment
+.env
+venv/
+env/

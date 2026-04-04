@@ -1,0 +1,21 @@
+from config import ZONES
+
+
+def assign_zone(bbox, fw, fh) -> dict:
+    cx_norm = ((bbox[0] + bbox[2]) / 2) / fw
+    for zid, cfg in ZONES.items():
+        if cfg["x_start"] <= cx_norm < cfg["x_end"]:
+            return {"id": zid, **cfg}
+    return {"id": "ZONE_2", **ZONES["ZONE_2"]}
+
+
+def get_zone_color(zid):
+    return ZONES[zid]["color_bgr"]
+
+
+def is_class_monitored(cls, zid):
+    return cls in ZONES[zid]["monitored_classes"]
+
+
+def get_all_zone_ids():
+    return list(ZONES.keys())
