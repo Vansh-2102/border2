@@ -18,9 +18,15 @@ class NightVisionEnhancer:
         if not self.is_low_light(frame):
             self.frames_normal += 1
             return frame, False
-        frame = self._clahe(frame)
-        frame = self._gamma(frame)
-        frame = self._denoise(frame)
+        
+        # Apply Thermal/Infrared mapping if configured
+        if INFRARED_MODE:
+            frame = self.simulate_thermal(frame)
+        else:
+            frame = self._clahe(frame)
+            frame = self._gamma(frame)
+            frame = self._denoise(frame)
+            
         self.frames_enhanced += 1
         return frame, True
 
@@ -39,7 +45,8 @@ class NightVisionEnhancer:
 
     def simulate_thermal(self, frame):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        return cv2.applyColorMap(gray, cv2.COLORMAP_INFERNO)
+        # Apply configured thermal colormap (Inference, Plasma, etc)
+        return cv2.applyColorMap(gray, THERMAL_COLORMAP)
 
     def get_stats(self) -> dict:
         total = self.frames_enhanced + self.frames_normal

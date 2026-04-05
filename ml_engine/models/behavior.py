@@ -15,6 +15,7 @@ class BehaviorAnalyzer:
         "DANGER_ZONE_PRESENCE": 0.45,
         "ADVANCING_TO_DANGER": 0.35,
         "GROUP_MOVEMENT": 0.20,
+        "WEAPON_DETECTED": 0.85,
     }
 
     def _is_night(self) -> bool:
@@ -75,6 +76,10 @@ class BehaviorAnalyzer:
         if speed > 8.0 and cls == "person":
             behaviors.append("GROUP_MOVEMENT")
             raw += self.behavior_weights["GROUP_MOVEMENT"]
+
+        if cls == "weapon":
+            behaviors.append("WEAPON_DETECTED")
+            raw += self.behavior_weights["WEAPON_DETECTED"]
 
         mult = ZONES[zid]["threat_multiplier"] if zid else 1.0
         final = min(raw * mult, 1.0)

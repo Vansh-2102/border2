@@ -10,14 +10,30 @@ class Visualizer:
     def draw_zones(self, frame) -> np.ndarray:
         overlay = frame.copy()
         h, w = frame.shape[:2]
+        
+        # Draw zones based on their defined 2D coordinates in config
         for zid, z in ZONES.items():
-            x1 = int(z["x_start"] * w)
-            x2 = int(z["x_end"] * w)
-            cv2.rectangle(overlay, (x1, 0), (x2, h), z["color_bgr"], -1)
-            cv2.putText(overlay, z["name"], (x1 + 8, 28), self.font, 0.55, z["color_bgr"], 2)
-        frame = cv2.addWeighted(overlay, 0.08, frame, 0.92, 0)
-        cv2.line(frame, (int(w * 0.333), 0), (int(w * 0.333), h), (255, 255, 255), 2)
-        cv2.line(frame, (int(w * 0.666), 0), (int(w * 0.666), h), (255, 255, 255), 2)
+            x1, x2 = int(z["x_start"] * w), int(z["x_end"] * w)
+            y1, y2 = int(z["y_start"] * h), int(z["y_end"] * h)
+            
+            # Draw semi-transparent background for each zone
+            cv2.rectangle(overlay, (x1, y1), (x2, y2), z["color_bgr"], -1)
+            
+            # Position labels slightly offset from the top-left of each zone
+            label_pos = (x1 + 15, y1 + 35)
+            cv2.putText(overlay, z["name"], label_pos, self.font, 0.6, z["color_bgr"], 2)
+            
+        frame = cv2.addWeighted(overlay, 0.12, frame, 0.88, 0)
+        
+        # Draw explicit horizontal grid lines to perfectly separate the three stacked zones
+        # Line 1: Top (33%)
+        h1 = int(h * 0.333)
+        cv2.line(frame, (0, h1), (w, h1), (255, 255, 255), 2)
+        
+        # Line 2: Mid (66%)
+        h2 = int(h * 0.666)
+        cv2.line(frame, (0, h2), (w, h2), (255, 255, 255), 2)
+        
         return frame
 
     def draw_detection(self, frame, det) -> np.ndarray:
@@ -42,8 +58,22 @@ class Visualizer:
                     (int(traj[i - 1][0]), int(traj[i - 1][1])),
                     (int(traj[i][0]), int(traj[i][1])),
                     tuple(int(v * a) for v in c),
-                    1,
+                    2,
                 )
+        return frame
+
+    def draw_alerts_list(self, frame, active_alerts) -> np.ndarray:
+        h, w = frame.shape[:2]
+        # Draw top-left alert notifications
+        for i, alert_data in enumerate(active_alerts[:5]):
+            alert = alert_data["alert"]
+            msg = f"ALERT: {alert['threat_level']} - {alert['class_name']} in {alert['zone_name']}"
+            color = (0, 0, 255) if alert["threat_level"] == "HIGH" else (0, 165, 255)
+            
+            # Draw semi-transparent background for alert
+            (tw, th), _ = cv2.getTextSize(msg, self.font, 0.6, 2)
+            cv2.rectangle(frame, (10, 40 + i * 35), (10 + tw + 10, 40 + i * 35 + th + 10), (0, 0, 0), -1)
+            cv2.putText(frame, msg, (15, 60 + i * 35), self.font, 0.6, color, 2)
         return frame
 
     def draw_stats_overlay(self, frame, stats, fps) -> np.ndarray:
@@ -58,8 +88,10 @@ class Visualizer:
             cv2.putText(frame, l, (w - 130, 22 + i * 18), self.font, 0.50, (255, 255, 255), 1)
         return frame
 
-    def draw_all(self, frame, result, fps=0) -> np.ndarray:
+    def draw_all(self, frame, result, fps=0, active_alerts=None) -> np.ndarray:
         frame = self.draw_zones(frame)
         for d in result.get("detections", []):
             frame = self.draw_detection(frame, d)
+        if active_alerts:
+            frame = self.draw_alerts_list(frame, active_alerts)
         return self.draw_stats_overlay(frame, result.get("threat_counts", {}), fps)

@@ -5,9 +5,11 @@ FRAME_SKIP = 2
 ZONES = {
     "ZONE_1": {
         "id": "ZONE_1",
-        "name": "GREEN ZONE",
+        "name": "GREEN ZONE (TOP)",
         "x_start": 0.0,
-        "x_end": 0.333,
+        "x_end": 1.0,
+        "y_start": 0.0,
+        "y_end": 0.333,
         "color_bgr": (0, 200, 0),
         "threat_multiplier": 1.0,
         "alert_threshold": 0.65,
@@ -16,9 +18,11 @@ ZONES = {
     },
     "ZONE_2": {
         "id": "ZONE_2",
-        "name": "YELLOW ZONE",
-        "x_start": 0.333,
-        "x_end": 0.666,
+        "name": "YELLOW ZONE (MID)",
+        "x_start": 0.0,
+        "x_end": 1.0,
+        "y_start": 0.333,
+        "y_end": 0.666,
         "color_bgr": (0, 200, 255),
         "threat_multiplier": 1.5,
         "alert_threshold": 0.40,
@@ -27,9 +31,11 @@ ZONES = {
     },
     "ZONE_3": {
         "id": "ZONE_3",
-        "name": "RED ZONE",
-        "x_start": 0.666,
+        "name": "RED ZONE (BTM)",
+        "x_start": 0.0,
         "x_end": 1.0,
+        "y_start": 0.666,
+        "y_end": 1.0,
         "color_bgr": (0, 0, 255),
         "threat_multiplier": 2.5,
         "alert_threshold": 0.15,
@@ -38,11 +44,18 @@ ZONES = {
     },
 }
 BASE_MODEL_PATH = "weights/base/yolov8n.pt"
-TRAINED_MODEL_PATH = "weights/trained/border_best.pt"
-USE_TRAINED_MODEL = False
+WEAPON_MODEL_PATH = "weights/trained/weapon_model.pt"
+THERMAL_MODEL_PATH = "weights/trained/thermal_model.pt"
+USE_CUSTOM_MODELS = True
 CONFIDENCE_THRESHOLD = 0.45
 IOU_THRESHOLD = 0.50
-TARGET_CLASSES = [0, 1, 2, 3, 5, 7, 15, 16]
+
+# Class Mappings for Custom Models
+WEAPON_CLASSES = {0: "Grenade", 1: "Knife", 2: "Missile", 3: "Pistol", 4: "Rifle"}
+THERMAL_CLASSES = {0: "person"}
+
+# Standard COCO classes for fallback/standard mode
+TARGET_CLASSES = [0, 1, 2, 3, 5, 7, 15, 16] 
 CLASS_NAMES = {
     0: "person",
     1: "bicycle",
@@ -53,6 +66,10 @@ CLASS_NAMES = {
     15: "cat",
     16: "dog",
 }
+# Night Vision & Thermal Settings
+NIGHT_BRIGHTNESS_THRESHOLD = 50
+INFRARED_MODE = True
+THERMAL_COLORMAP = 10 # cv2.COLORMAP_INFERNO
 IOU_MATCH_THRESHOLD = 0.25
 MAX_LOST_FRAMES = 30
 HISTORY_MAXLEN = 90

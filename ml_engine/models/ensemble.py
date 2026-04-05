@@ -6,10 +6,14 @@ from models.tracker import MultiObjectTracker
 from utils.zone_utils import assign_zone
 
 
+from config import INFRARED_MODE
+
 class MLEnsemble:
     def __init__(self):
         print("[MLEnsemble] Loading...")
-        self.detector = ObjectDetector()
+        self.detector = ObjectDetector(mode="standard")
+        self.weapon_detector = ObjectDetector(mode="weapon")
+        self.thermal_detector = ObjectDetector(mode="thermal")
         self.tracker = MultiObjectTracker()
         self.behavior = BehaviorAnalyzer()
         self.classifier = ThreatClassifier()
@@ -21,7 +25,16 @@ class MLEnsemble:
         self.frame_num += 1
         fh, fw = frame.shape[:2]
         enhanced, was_enhanced = self.night.enhance(frame)
-        detections = self.detector.detect(enhanced)
+        
+        # Select detector based on mode
+        if was_enhanced and INFRARED_MODE:
+            detections = self.thermal_detector.detect(enhanced)
+        else:
+            # Run both standard and weapon detection in normal/enhanced-clahe mode
+            detections = self.detector.detect(enhanced)
+            weapon_dets = self.weapon_detector.detect(enhanced)
+            detections.extend(weapon_dets)
+            
         detections = self.tracker.update(detections, self.frame_num)
         for det in detections:
             zone = assign_zone(det["bbox"], fw, fh)

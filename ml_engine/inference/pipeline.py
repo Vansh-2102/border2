@@ -1,6 +1,7 @@
 import asyncio
 import os
 import cv2
+import time
 from models.ensemble import MLEnsemble
 from utils.frame_utils import open_camera, read_frame, should_process, save_snapshot
 from utils.visualization import Visualizer
@@ -18,6 +19,7 @@ class InferencePipeline:
         self.cap = None
         self.latest_result = {}
         self.frame_count = 0
+        self.active_alerts = []
 
     async def start(self, camera_source=CAMERA_SOURCE):
         self.running = True
@@ -35,7 +37,14 @@ class InferencePipeline:
             try:
                 result = self.ml.process_frame(frame)
                 result["fps"] = self.metrics.current_fps
-                display = self.viz.draw_all(frame.copy(), result, self.metrics.current_fps)
+                
+                # Update active alerts list (remove expired, add new)
+                now = time.time()
+                self.active_alerts = [a for a in self.active_alerts if a["expiry"] > now]
+                for alert in result.get("alerts", []):
+                    self.active_alerts.append({"alert": alert, "expiry": now + 5.0})
+                
+                display = self.viz.draw_all(frame.copy(), result, self.metrics.current_fps, self.active_alerts)
                 cv2.imshow("Border Surveillance", display)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     self.stop()

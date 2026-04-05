@@ -6,14 +6,19 @@ __pycache__/
 # Data and snapshots
 ml_engine/data/
 data/
+ml_engine/weapon_data/
+ml_engine/thermal_data_new/
+*.zip
 
 # Model weights
 *.pt
 ml_engine/weights/
 weights/
+ml_engine/runs/
 
 # Reports
 ml_engine/data/reports/
+ml_engine/error.log
 
 # IDE files
 .vscode/
