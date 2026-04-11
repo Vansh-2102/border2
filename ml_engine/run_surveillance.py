@@ -21,12 +21,15 @@ async def main():
     try:
         # source=0 for webcam, or path to a video file
         await ml.start(camera_source=0, callback=on_result)
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, asyncio.CancelledError):
         print("\n[INFO] Stopping system...")
-        ml.stop()
     except Exception as e:
         print(f"\n[ERROR] {e}")
+    finally:
         ml.stop()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        pass

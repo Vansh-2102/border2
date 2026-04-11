@@ -48,6 +48,7 @@ class InferencePipeline:
                 cv2.imshow("Border Surveillance", display)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     self.stop()
+                    break
                 for alert in result.get("alerts", []):
                     if alert["threat_level"] == "HIGH":
                         for det in result["detections"]:
@@ -66,7 +67,11 @@ class InferencePipeline:
         self.running = False
         if self.cap:
             self.cap.release()
-        cv2.destroyAllWindows()
+            self.cap = None
+        try:
+            cv2.destroyAllWindows()
+        except:
+            pass
 
     def get_latest(self) -> dict:
         return self.latest_result
