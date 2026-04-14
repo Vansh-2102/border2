@@ -20,19 +20,18 @@ WEAPON_SIZES_M = {
 DEFAULT_FOCAL_LENGTH_PX = 950.0 # Fallback if calibration is missing
 
 # Real-world ground plane mapping
-# Example 4 points on ground in image space (normalized 0-1)
-# and their real-world coordinates in meters (X, Y)
+# These points define a 10m wide by 40m deep corridor in front of the camera
 GROUND_PLANE_POINTS_IMG = [
-    [0.45, 0.45], # Top-left on ground
-    [0.55, 0.45], # Top-right on ground
-    [0.9, 0.95],  # Bottom-right on ground
-    [0.1, 0.95]   # Bottom-left on ground
+    [0.45, 0.40], # Top-left (far left)
+    [0.55, 0.40], # Top-right (far right)
+    [0.95, 0.95], # Bottom-right (near right)
+    [0.05, 0.95]  # Bottom-left (near left)
 ]
 GROUND_PLANE_POINTS_WORLD = [
-    [0.0, 10.0],  # 10m ahead, 0m center
-    [5.0, 10.0],  # 10m ahead, 5m right
-    [5.0, 1.0],   # 1m ahead, 5m right
-    [0.0, 1.0]    # 1m ahead, 0m center
+    [-5.0, 40.0], # 40m ahead, 5m left
+    [ 5.0, 40.0], # 40m ahead, 5m right
+    [ 5.0,  0.0], # 0m ahead, 5m right
+    [-5.0,  0.0]  # 0m ahead, 5m left
 ]
 
 ZONES = {

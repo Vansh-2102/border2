@@ -23,6 +23,8 @@ class PostProcessor:
             "behaviors": det["behaviors"],
             "behavior_score": det["behavior_score"],
             "speed": det.get("speed", 0),
+            "distance": det.get("distance", 0),
+            "world_pos": det.get("world_pos", (0, 0)),
             "trajectory": det.get("trajectory", [])[-10:],
             "reasons": det.get("reasons", []),
         }

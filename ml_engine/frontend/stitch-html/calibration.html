@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sentinel Spatial AI - Camera Calibration</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "surface-container-high": "#2a2a2c",
+                "tertiary-container": "#00a572",
+                "inverse-on-surface": "#313032",
+                "secondary": "#ffe2ab",
+                "secondary-fixed": "#ffdfa0",
+                "on-surface": "#e5e1e4",
+                "surface-container": "#201f22",
+                "on-primary-container": "#5c0000",
+                "surface-bright": "#39393b",
+                "surface-container-low": "#1c1b1d",
+                "on-primary-fixed-variant": "#930100",
+                "surface-tint": "#ffb4a8",
+                "inverse-surface": "#e5e1e4",
+                "outline-variant": "#603e39",
+                "on-tertiary-fixed-variant": "#005236",
+                "tertiary-fixed-dim": "#4edea3",
+                "surface-container-lowest": "#0e0e10",
+                "tertiary": "#4edea3",
+                "on-secondary": "#402d00",
+                "secondary-fixed-dim": "#fbbc00",
+                "primary-container": "#ff5540",
+                "primary-fixed": "#ffdad4",
+                "error": "#ffb4ab",
+                "on-error-container": "#ffdad6",
+                "on-tertiary": "#003824",
+                "surface": "#131315",
+                "outline": "#b18780",
+                "on-tertiary-fixed": "#002113",
+                "tertiary-fixed": "#6ffbbe",
+                "inverse-primary": "#c00100",
+                "on-secondary-fixed-variant": "#5c4300",
+                "on-secondary-fixed": "#261a00",
+                "background": "#131315",
+                "surface-dim": "#131315",
+                "primary": "#ffb4a8",
+                "surface-container-highest": "#353437",
+                "on-tertiary-container": "#00311f",
+                "on-background": "#e5e1e4",
+                "secondary-container": "#ffbf00",
+                "primary-fixed-dim": "#ffb4a8",
+                "on-error": "#690005",
+                "on-secondary-container": "#6d5000",
+                "surface-variant": "#353437",
+                "on-primary": "#690100",
+                "on-surface-variant": "#ebbbb4",
+                "on-primary-fixed": "#410000",
+                "error-container": "#93000a"
+            },
+            "borderRadius": {
+                "DEFAULT": "0px",
+                "lg": "0px",
+                "xl": "0px",
+                "full": "9999px"
+            },
+            "fontFamily": {
+                "headline": ["Space Grotesk"],
+                "body": ["Inter"],
+                "label": ["Space Grotesk"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .perspective-grid {
+            background-image: 
+                linear-gradient(rgba(78, 222, 163, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(78, 222, 163, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            transform: perspective(500px) rotateX(60deg);
+        }
+        .scanline {
+            background: linear-gradient(to bottom, transparent 50%, rgba(192, 1, 0, 0.05) 50.5%, transparent 51%);
+            background-size: 100% 4px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body overflow-hidden">
+<!-- TopNavBar -->
+<header class="bg-[#0e0e10] border-b-[0.5px] border-[#603e39]/15 rounded-none w-full sticky top-0 z-50 flex justify-between items-center px-6 py-3 w-full shadow-none">
+<div class="flex items-center gap-8">
+<div class="font-['Space_Grotesk'] text-lg font-black text-[#c00100] tracking-tighter">SENTINEL SPATIAL AI</div>
+<nav class="hidden md:flex gap-6">
+<a class="font-['Space_Grotesk'] uppercase tracking-[0.05em] text-xs font-bold text-zinc-500 hover:text-zinc-200 transition-colors" href="#">Surveillance</a>
+<a class="font-['Space_Grotesk'] uppercase tracking-[0.05em] text-xs font-bold text-zinc-500 hover:text-zinc-200 transition-colors" href="#">Analytics</a>
+<a class="font-['Space_Grotesk'] uppercase tracking-[0.05em] text-xs font-bold text-[#c00100] border-b-2 border-[#c00100] pb-2" href="#">Calibration</a>
+<a class="font-['Space_Grotesk'] uppercase tracking-[0.05em] text-xs font-bold text-zinc-500 hover:text-zinc-200 transition-colors" href="#">Gallery</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-zinc-500 cursor-pointer hover:bg-white/5 transition-all duration-150 p-2">settings</span>
+<span class="material-symbols-outlined text-zinc-500 cursor-pointer hover:bg-white/5 transition-all duration-150 p-2">account_circle</span>
+</div>
+</header>
+<div class="flex h-[calc(100vh-80px)]">
+<!-- SideNavBar -->
+<aside class="bg-[#131315] border-r-[0.5px] border-[#603e39]/15 rounded-none h-full w-64 hidden md:flex flex-col pt-16 shadow-[20px_0_40px_rgba(0,0,0,0.4)]">
+<div class="px-6 mb-10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-surface-container-high border border-outline-variant/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-[#c00100]">military_tech</span>
+</div>
+<div>
+<div class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase font-bold">OPERATOR_01</div>
+<div class="font-['Space_Grotesk'] text-[8px] text-zinc-500 tracking-widest uppercase">SECTOR: NORTH_GRID</div>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center py-3 font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-zinc-400 pl-5 hover:bg-white/5 hover:text-white transition-all group" href="#">
+<span class="material-symbols-outlined mr-3 text-sm" data-icon="radar">radar</span>
+                    Live View
+                </a>
+<a class="flex items-center py-3 font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-zinc-400 pl-5 hover:bg-white/5 hover:text-white transition-all group" href="#">
+<span class="material-symbols-outlined mr-3 text-sm" data-icon="visibility">visibility</span>
+                    Object Detection
+                </a>
+<a class="flex items-center py-3 font-['Space_Grotesk'] text-[10px] tracking-widest uppercase bg-[#201f22] text-[#c00100] border-l-4 border-[#c00100] pl-4 group" href="#">
+<span class="material-symbols-outlined mr-3 text-sm" data-icon="thermostat">thermostat</span>
+                    Thermal Grid
+                </a>
+<a class="flex items-center py-3 font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-zinc-400 pl-5 hover:bg-white/5 hover:text-white transition-all group" href="#">
+<span class="material-symbols-outlined mr-3 text-sm" data-icon="wifi_tethering_error">wifi_tethering_error</span>
+                    Signal Intel
+                </a>
+</nav>
+<div class="border-t border-[#603e39]/10 mt-auto py-4">
+<a class="flex items-center py-3 font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-zinc-400 pl-5 hover:bg-white/5 hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined mr-3 text-sm" data-icon="settings_suggest">settings_suggest</span>
+                    System Settings
+                </a>
+<a class="flex items-center py-3 font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-zinc-400 pl-5 hover:bg-white/5 hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined mr-3 text-sm" data-icon="logout">logout</span>
+                    Logout
+                </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 p-8 overflow-y-auto bg-surface relative">
+<div class="absolute inset-0 scanline pointer-events-none opacity-20"></div>
+<!-- Header Section -->
+<div class="mb-8 flex justify-between items-end">
+<div>
+<h1 class="font-headline text-3xl font-black tracking-tighter uppercase text-on-surface">Camera Calibration <span class="text-[#c00100]">_V4.2</span></h1>
+<p class="font-label text-[10px] tracking-[0.2em] text-zinc-500 uppercase mt-1">Status: Manual Geometry Override Active</p>
+</div>
+<div class="flex gap-4">
+<button class="bg-surface-container-high px-4 py-2 text-[10px] font-headline font-bold uppercase tracking-widest border-l-2 border-[#ffbf00] flex items-center gap-2 hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-sm">refresh</span> Reset Reference
+                    </button>
+<button class="bg-[#c00100] px-6 py-2 text-[10px] font-headline font-bold uppercase tracking-widest text-white flex items-center gap-2 hover:opacity-90 active:scale-[0.99] transition-all">
+<span class="material-symbols-outlined text-sm">precision_manufacturing</span> Set Calibration
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Primary Calibration Viewport -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container relative aspect-video group border border-outline-variant/10 shadow-2xl">
+<div class="absolute top-4 left-4 z-10 bg-black/60 backdrop-blur-md p-2 border border-outline-variant/20">
+<div class="font-headline text-[9px] font-bold text-[#4edea3] tracking-[0.3em] uppercase">Ref_Source: Cam_08_North</div>
+</div>
+<!-- Reference Image -->
+<img alt="Tactical Surveillance View" class="w-full h-full object-cover grayscale opacity-60" data-alt="High-angle surveillance shot of a modern concrete industrial plaza with geometric floor patterns and sharp shadows under harsh midday sun" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAm_wnio6t00IMz1cEru3JYlVzcDX7sAxHtys1PUSCh0Lktkw7ZR83728SVGGA-AvYl4eFV-UkN4g-ZFOrl59dvQ6gNoPzpxKiKB7hbk_G4OpXrF5lSjLF-RIVkyUDD7uvunMbfT_Nu0skT9fuo8USLDPzS1OaSpFmHNLwDcqyNuTADCj02Bdm_kHx3rmmnSpuNjl3N4De-WWTYAwysGcgZ7A6xuRDOw-jhLrviPgIhUkqavJNs8jJKtMkEVodjbwesqYZdeO4F39c"/>
+<!-- Calibration Overlay Layer -->
+<div class="absolute inset-0 p-12">
+<div class="w-full h-full border-[1px] border-dashed border-[#4edea3]/30 relative">
+<!-- Perspective Grid -->
+<div class="absolute inset-x-0 bottom-0 h-1/2 perspective-grid opacity-40"></div>
+<!-- Calibration Points -->
+<!-- Point 1 -->
+<div class="absolute top-[20%] left-[25%] -translate-x-1/2 -translate-y-1/2 group/point">
+<div class="w-10 h-10 border border-[#c00100] flex items-center justify-center relative cursor-move">
+<div class="w-1 h-1 bg-[#c00100]"></div>
+<div class="absolute -top-6 left-0 bg-[#c00100] text-white text-[8px] px-1 font-headline font-bold">PT_01</div>
+<div class="absolute w-20 h-20 border border-[#c00100]/20 scale-0 group-hover/point:scale-100 transition-transform"></div>
+</div>
+</div>
+<!-- Point 2 -->
+<div class="absolute top-[20%] right-[25%] translate-x-1/2 -translate-y-1/2">
+<div class="w-10 h-10 border border-[#c00100] flex items-center justify-center relative cursor-move">
+<div class="w-1 h-1 bg-[#c00100]"></div>
+<div class="absolute -top-6 left-0 bg-[#c00100] text-white text-[8px] px-1 font-headline font-bold">PT_02</div>
+</div>
+</div>
+<!-- Point 3 -->
+<div class="absolute bottom-[15%] right-[10%] translate-x-1/2 translate-y-1/2">
+<div class="w-10 h-10 border border-[#c00100] flex items-center justify-center relative cursor-move">
+<div class="w-1 h-1 bg-[#c00100]"></div>
+<div class="absolute -bottom-6 left-0 bg-[#c00100] text-white text-[8px] px-1 font-headline font-bold">PT_03</div>
+</div>
+</div>
+<!-- Point 4 -->
+<div class="absolute bottom-[15%] left-[10%] -translate-x-1/2 translate-y-1/2">
+<div class="w-10 h-10 border border-[#c00100] flex items-center justify-center relative cursor-move">
+<div class="w-1 h-1 bg-[#c00100]"></div>
+<div class="absolute -bottom-6 left-0 bg-[#c00100] text-white text-[8px] px-1 font-headline font-bold">PT_04</div>
+</div>
+</div>
+<!-- Connecting Perspective Box -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" preserveaspectratio="none" viewbox="0 0 100 100">
+<polygon fill="rgba(192, 1, 0, 0.05)" points="25,20 75,20 90,85 10,85" stroke="#c00100" stroke-width="0.2"></polygon>
+</svg>
+</div>
+</div>
+<div class="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1 border border-outline-variant/20 flex gap-4">
+<span class="text-[9px] font-headline text-zinc-400">RESOLUTION: 3840x2160</span>
+<span class="text-[9px] font-headline text-zinc-400">LAT: 51.5074° N</span>
+<span class="text-[9px] font-headline text-zinc-400">LONG: 0.1278° W</span>
+</div>
+</div>
+<!-- Tactical Controls Sidebar -->
+<div class="col-span-12 lg:col-span-4 space-y-6">
+<!-- Coordinate Inputs -->
+<div class="bg-surface-container p-6 border-l-2 border-outline">
+<h3 class="font-headline text-xs font-bold uppercase tracking-widest mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-[#c00100]">grid_4x4</span>
+                            Coordinate Entry
+                        </h3>
+<div class="space-y-4">
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1">
+<label class="font-headline text-[8px] text-zinc-500 uppercase tracking-tighter">P1_X_COORD</label>
+<input class="w-full bg-surface-container-high border-none text-xs font-mono p-2 focus:ring-0 border-l-2 border-outline-variant focus:border-[#c00100] text-[#ffb4a8]" type="text" value="1242.04"/>
+</div>
+<div class="space-y-1">
+<label class="font-headline text-[8px] text-zinc-500 uppercase tracking-tighter">P1_Y_COORD</label>
+<input class="w-full bg-surface-container-high border-none text-xs font-mono p-2 focus:ring-0 border-l-2 border-outline-variant focus:border-[#c00100] text-[#ffb4a8]" type="text" value="432.88"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1">
+<label class="font-headline text-[8px] text-zinc-500 uppercase tracking-tighter">P2_X_COORD</label>
+<input class="w-full bg-surface-container-high border-none text-xs font-mono p-2 focus:ring-0 border-l-2 border-outline-variant focus:border-[#c00100] text-[#ffb4a8]" type="text" value="2601.12"/>
+</div>
+<div class="space-y-1">
+<label class="font-headline text-[8px] text-zinc-500 uppercase tracking-tighter">P2_Y_COORD</label>
+<input class="w-full bg-surface-container-high border-none text-xs font-mono p-2 focus:ring-0 border-l-2 border-outline-variant focus:border-[#c00100] text-[#ffb4a8]" type="text" value="430.55"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1">
+<label class="font-headline text-[8px] text-zinc-500 uppercase tracking-tighter">P3_X_COORD</label>
+<input class="w-full bg-surface-container-high border-none text-xs font-mono p-2 focus:ring-0 border-l-2 border-outline-variant focus:border-[#c00100] text-[#ffb4a8]" type="text" value="3120.90"/>
+</div>
+<div class="space-y-1">
+<label class="font-headline text-[8px] text-zinc-500 uppercase tracking-tighter">P3_Y_COORD</label>
+<input class="w-full bg-surface-container-high border-none text-xs font-mono p-2 focus:ring-0 border-l-2 border-outline-variant focus:border-[#c00100] text-[#ffb4a8]" type="text" value="1840.21"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1">
+<label class="font-headline text-[8px] text-zinc-500 uppercase tracking-tighter">P4_X_COORD</label>
+<input class="w-full bg-surface-container-high border-none text-xs font-mono p-2 focus:ring-0 border-l-2 border-outline-variant focus:border-[#c00100] text-[#ffb4a8]" type="text" value="722.33"/>
+</div>
+<div class="space-y-1">
+<label class="font-headline text-[8px] text-zinc-500 uppercase tracking-tighter">P4_Y_COORD</label>
+<input class="w-full bg-surface-container-high border-none text-xs font-mono p-2 focus:ring-0 border-l-2 border-outline-variant focus:border-[#c00100] text-[#ffb4a8]" type="text" value="1839.99"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Spatial Metadata -->
+<div class="bg-surface-container-lowest p-6 border border-outline-variant/10">
+<h3 class="font-headline text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-4">Perspective Analytics</h3>
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<span class="text-[9px] font-mono text-zinc-400 uppercase">FOV_Horizontal</span>
+<span class="text-[10px] font-mono text-[#4edea3]">104.2°</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-[9px] font-mono text-zinc-400 uppercase">Aspect_Ratio</span>
+<span class="text-[10px] font-mono text-[#4edea3]">1.77:1</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-[9px] font-mono text-zinc-400 uppercase">Ground_Plane_Confidence</span>
+<div class="w-24 h-1 bg-surface-container-high">
+<div class="w-[92%] h-full bg-[#4edea3]"></div>
+</div>
+<span class="text-[10px] font-mono text-[#4edea3]">92%</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-[9px] font-mono text-zinc-400 uppercase">Radial_Distortion_Correction</span>
+<span class="text-[10px] font-mono text-[#c00100]">ENABLED</span>
+</div>
+</div>
+</div>
+<!-- System Diagnostics Log -->
+<div class="bg-[#0e0e10] p-4 font-mono text-[9px] text-zinc-500 leading-relaxed border-t border-[#603e39]/30">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-1.5 h-1.5 rounded-full bg-[#4edea3] animate-pulse"></div>
+<span class="text-[#4edea3]">CALIBRATION_ENGINE_ACTIVE</span>
+</div>
+<p>&gt; Initializing Homography Matrix computation...</p>
+<p>&gt; Mapping source points to target ground plane...</p>
+<p>&gt; Projection error: 0.042px (Optimal)</p>
+<p>&gt; Grid mesh projected. Waiting for user confirmation.</p>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer Status Bar -->
+<footer class="bg-[#0e0e10] border-t-[0.5px] border-[#603e39]/15 rounded-none fixed bottom-0 w-full z-50 flex justify-between items-center px-4 py-1.5 w-full h-8 shadow-none">
+<div class="flex gap-6 items-center">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-[#4edea3] shadow-[0_0_8px_#4edea3]"></div>
+<span class="font-['Inter'] text-[9px] font-mono tracking-tighter text-[#4edea3]">SYSTEM_READY</span>
+</div>
+<div class="font-['Inter'] text-[9px] font-mono tracking-tighter text-zinc-600 hover:text-[#4edea3] cursor-help transition-all">FPS: 120</div>
+<div class="font-['Inter'] text-[9px] font-mono tracking-tighter text-zinc-600 hover:text-[#4edea3] cursor-help transition-all uppercase">Diagnostics</div>
+</div>
+<div class="flex gap-6 items-center">
+<div class="font-['Inter'] text-[9px] font-mono tracking-tighter text-zinc-600 hover:text-[#4edea3] cursor-help transition-all uppercase">Network Status: NOMINAL</div>
+<div class="font-['Inter'] text-[9px] font-mono tracking-tighter text-zinc-600 hover:text-[#4edea3] cursor-help transition-all">LATENCY: 14MS</div>
+<div class="font-['Inter'] text-[9px] font-mono tracking-tighter text-zinc-600 hover:text-[#4edea3] cursor-help transition-all uppercase">Encryption: AES-256</div>
+</div>
+</footer>
+</body></html>

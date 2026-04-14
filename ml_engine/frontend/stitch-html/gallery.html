@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SENTINEL SPATIAL AI - Snapshot Gallery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-high": "#2a2a2c",
+                    "tertiary-container": "#00a572",
+                    "inverse-on-surface": "#313032",
+                    "secondary": "#ffe2ab",
+                    "secondary-fixed": "#ffdfa0",
+                    "on-surface": "#e5e1e4",
+                    "surface-container": "#201f22",
+                    "on-primary-container": "#5c0000",
+                    "surface-bright": "#39393b",
+                    "surface-container-low": "#1c1b1d",
+                    "on-primary-fixed-variant": "#930100",
+                    "surface-tint": "#ffb4a8",
+                    "inverse-surface": "#e5e1e4",
+                    "outline-variant": "#603e39",
+                    "on-tertiary-fixed-variant": "#005236",
+                    "tertiary-fixed-dim": "#4edea3",
+                    "surface-container-lowest": "#0e0e10",
+                    "tertiary": "#4edea3",
+                    "on-secondary": "#402d00",
+                    "secondary-fixed-dim": "#fbbc00",
+                    "primary-container": "#ff5540",
+                    "primary-fixed": "#ffdad4",
+                    "error": "#ffb4ab",
+                    "on-error-container": "#ffdad6",
+                    "on-tertiary": "#003824",
+                    "surface": "#131315",
+                    "outline": "#b18780",
+                    "on-tertiary-fixed": "#002113",
+                    "tertiary-fixed": "#6ffbbe",
+                    "inverse-primary": "#c00100",
+                    "on-secondary-fixed-variant": "#5c4300",
+                    "on-secondary-fixed": "#261a00",
+                    "background": "#131315",
+                    "surface-dim": "#131315",
+                    "primary": "#ffb4a8",
+                    "surface-container-highest": "#353437",
+                    "on-tertiary-container": "#00311f",
+                    "on-background": "#e5e1e4",
+                    "secondary-container": "#ffbf00",
+                    "primary-fixed-dim": "#ffb4a8",
+                    "on-error": "#690005",
+                    "on-secondary-container": "#6d5000",
+                    "surface-variant": "#353437",
+                    "on-primary": "#690100",
+                    "on-surface-variant": "#ebbbb4",
+                    "on-primary-fixed": "#410000",
+                    "error-container": "#93000a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0px",
+                    "lg": "0px",
+                    "xl": "0px",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Space Grotesk"],
+                    "body": ["Inter"],
+                    "label": ["Space Grotesk"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .kinetic-glow:hover {
+            box-shadow: inset 0 0 15px rgba(192, 1, 0, 0.2);
+        }
+        .scanline {
+            background: linear-gradient(to bottom, transparent 50%, rgba(192, 1, 0, 0.05) 51%, transparent 52%);
+            background-size: 100% 4px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-inverse-primary selection:text-white">
+<nav class="bg-[#0e0e10] border-b-[0.5px] border-[#603e39]/15 shadow-none rounded-none w-full sticky top-0 z-50 flex justify-between items-center px-6 py-3">
+<div class="flex items-center gap-8">
+<span class="font-['Space_Grotesk'] text-lg font-black text-[#c00100] tracking-tighter">SENTINEL SPATIAL AI</span>
+<div class="hidden md:flex gap-6 items-center">
+<a class="font-['Space_Grotesk'] uppercase tracking-[0.05em] text-xs font-bold text-zinc-500 hover:text-zinc-200 transition-colors" href="#">Surveillance</a>
+<a class="font-['Space_Grotesk'] uppercase tracking-[0.05em] text-xs font-bold text-zinc-500 hover:text-zinc-200 transition-colors" href="#">Analytics</a>
+<a class="font-['Space_Grotesk'] uppercase tracking-[0.05em] text-xs font-bold text-zinc-500 hover:text-zinc-200 transition-colors" href="#">Calibration</a>
+<a class="font-['Space_Grotesk'] uppercase tracking-[0.05em] text-xs font-bold text-[#c00100] border-b-2 border-[#c00100] pb-2" href="#">Gallery</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-zinc-500 cursor-pointer hover:bg-white/5 transition-all p-1" data-icon="settings">settings</span>
+<span class="material-symbols-outlined text-zinc-500 cursor-pointer hover:bg-white/5 transition-all p-1" data-icon="account_circle">account_circle</span>
+</div>
+</nav>
+<aside class="bg-[#131315] border-r-[0.5px] border-[#603e39]/15 shadow-[20px_0_40px_rgba(0,0,0,0.4)] rounded-none h-screen w-64 fixed left-0 top-0 flex flex-col pt-16 z-40 hidden lg:flex">
+<div class="px-6 py-4 mb-4 border-b border-[#603e39]/10">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-xs text-inverse-primary" data-icon="shield">shield</span>
+</div>
+<div>
+<div class="font-['Space_Grotesk'] text-[10px] tracking-widest uppercase text-white">OPERATOR_01</div>
+<div class="font-['Space_Grotesk'] text-[8px] tracking-widest uppercase text-zinc-500">SECTOR: NORTH_GRID</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-4 py-3 pl-5 text-zinc-400 hover:bg-white/5 hover:text-white transition-all font-['Space_Grotesk'] text-[10px] tracking-widest uppercase" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="radar">radar</span>
+                Live View
+            </a>
+<a class="flex items-center gap-4 py-3 pl-5 text-zinc-400 hover:bg-white/5 hover:text-white transition-all font-['Space_Grotesk'] text-[10px] tracking-widest uppercase" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="visibility">visibility</span>
+                Object Detection
+            </a>
+<a class="flex items-center gap-4 py-3 pl-5 text-zinc-400 hover:bg-white/5 hover:text-white transition-all font-['Space_Grotesk'] text-[10px] tracking-widest uppercase" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="thermostat">thermostat</span>
+                Thermal Grid
+            </a>
+<a class="flex items-center gap-4 py-3 pl-5 text-zinc-400 hover:bg-white/5 hover:text-white transition-all font-['Space_Grotesk'] text-[10px] tracking-widest uppercase" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="wifi_tethering_error">wifi_tethering_error</span>
+                Signal Intel
+            </a>
+</div>
+<div class="mt-auto flex flex-col border-t border-[#603e39]/10">
+<a class="flex items-center gap-4 py-4 pl-5 text-zinc-400 hover:bg-white/5 hover:text-white transition-all font-['Space_Grotesk'] text-[10px] tracking-widest uppercase" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="settings_suggest">settings_suggest</span>
+                System Settings
+            </a>
+<a class="flex items-center gap-4 py-4 pl-5 text-zinc-400 hover:bg-white/5 hover:text-white transition-all font-['Space_Grotesk'] text-[10px] tracking-widest uppercase" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="logout">logout</span>
+                Logout
+            </a>
+</div>
+</aside>
+<main class="lg:pl-64 pt-6 pb-20 px-6 min-h-screen">
+<header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h1 class="font-headline text-3xl font-black tracking-tighter text-on-surface">SNAPSHOT_GALLERY</h1>
+<p class="font-mono text-[10px] text-zinc-500 uppercase tracking-widest mt-1 flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-inverse-primary animate-pulse"></span>
+                    ACTIVE ARCHIVE // SECTOR_NORTH_01
+                </p>
+</div>
+<div class="flex flex-wrap gap-2 items-center bg-surface-container-lowest p-1">
+<div class="px-3 py-1.5 bg-surface-container-high flex items-center gap-2 border-l-2 border-outline-variant">
+<span class="material-symbols-outlined text-xs text-zinc-500" data-icon="calendar_today">calendar_today</span>
+<span class="font-label text-[10px] uppercase tracking-wider text-on-surface">DATE: ALL</span>
+</div>
+<div class="px-3 py-1.5 bg-surface-container-high flex items-center gap-2 border-l-2 border-inverse-primary">
+<span class="material-symbols-outlined text-xs text-inverse-primary" data-icon="warning">warning</span>
+<span class="font-label text-[10px] uppercase tracking-wider text-on-surface">THREAT: CRITICAL</span>
+</div>
+<div class="px-3 py-1.5 bg-surface-container-high flex items-center gap-2 border-l-2 border-tertiary">
+<span class="material-symbols-outlined text-xs text-tertiary" data-icon="category">category</span>
+<span class="font-label text-[10px] uppercase tracking-wider text-on-surface">CLASS: UNKNOWN</span>
+</div>
+<button class="px-4 py-1.5 bg-inverse-primary text-white font-label text-[10px] uppercase tracking-widest hover:opacity-90 transition-opacity">
+                    APPLY FILTERS
+                </button>
+</div>
+</header>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0.5 bg-[#603e39]/10 border-[0.5px] border-[#603e39]/15">
+<div class="bg-surface-container relative group overflow-hidden kinetic-glow">
+<div class="absolute top-2 left-2 z-10 flex flex-col gap-1">
+<span class="bg-inverse-primary text-white px-2 py-0.5 text-[8px] font-bold tracking-tighter uppercase">CRITICAL</span>
+<span class="bg-black/60 backdrop-blur-md text-white px-2 py-0.5 text-[8px] font-mono tracking-tighter">ID: TGT-8821</span>
+</div>
+<div class="aspect-square bg-zinc-900 relative">
+<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity grayscale contrast-125" data-alt="Grainy CCTV style night vision capture of a hooded figure near a perimeter fence with thermal heat signatures" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpebVy3ru94bW1a7pu566ekNQBqIaHIzVSp3AwQvIuCuymGOvf5gSSC0Ijp4Zj8IPGcqtIcjzalI9TZZ1Z_D9siD_EGXU5vTfDssFZqocmh02BP-Hpodc2lp7ltFQrvCrB7XPO7RxM9Nnghpwr5Allqij5ZKw__pHprqaAzYUOYN5JbG06BuWLNIeGUkHUNoIvzS6sER3u4b_ZmLmUMsnpAPjWdjTvwZkrEzegBLI-2-ZhNvDZlcA9IpKLkI-SxDtFkiAtmvE6b2o"/>
+<div class="absolute inset-0 scanline pointer-events-none"></div>
+<div class="absolute bottom-2 right-2">
+<span class="material-symbols-outlined text-inverse-primary text-sm" data-icon="center_focus_strong">center_focus_strong</span>
+</div>
+</div>
+<div class="p-4 border-t border-[#603e39]/10">
+<div class="flex justify-between items-start mb-2">
+<div class="font-headline text-xs font-bold tracking-tight">UNAUTHORIZED_BREACH</div>
+<div class="font-mono text-[9px] text-zinc-500">22:14:02 // 14.02.24</div>
+</div>
+<div class="flex gap-4">
+<div class="flex flex-col">
+<span class="text-[8px] text-zinc-600 uppercase tracking-widest">Class</span>
+<span class="text-[10px] font-mono text-zinc-300">HUMAN_INF</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[8px] text-zinc-600 uppercase tracking-widest">Confidence</span>
+<span class="text-[10px] font-mono text-tertiary">98.4%</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container relative group overflow-hidden kinetic-glow">
+<div class="absolute top-2 left-2 z-10 flex flex-col gap-1">
+<span class="bg-secondary-container text-on-secondary-container px-2 py-0.5 text-[8px] font-bold tracking-tighter uppercase">HIGH</span>
+<span class="bg-black/60 backdrop-blur-md text-white px-2 py-0.5 text-[8px] font-mono tracking-tighter">ID: TGT-4410</span>
+</div>
+<div class="aspect-square bg-zinc-900 relative">
+<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity grayscale brightness-75" data-alt="Digital wireframe visualization of a vehicle approaching a restricted gate with digital target bounding boxes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDN6kaFEultOmX1PADLea5H3lsi4d1Abj9dYl5acjlUUJ-EjOpgDn9XlRxR13d0i5QI1g9pplAbHXjs0kI0jazDMWrW-bnn14sOYMwtBOye3KwLsBtl78sMWhYvvruyypIM4xSkUUPNmZvSUkJqcAVglJfbBql-FPlcZuNqXfN-8FxoOJksIvrLmCSCffgDAo_8xpSkRlVptWPPWdUhGqS3eBoyT_ZNQgL7BGTGAvSkT5XW9lSY4l-sGPYchf1a3LV8FiBz-YIH0qo"/>
+<div class="absolute inset-0 scanline pointer-events-none"></div>
+<div class="absolute bottom-2 right-2">
+<span class="material-symbols-outlined text-secondary-container text-sm" data-icon="minor_crash">minor_crash</span>
+</div>
+</div>
+<div class="p-4 border-t border-[#603e39]/10">
+<div class="flex justify-between items-start mb-2">
+<div class="font-headline text-xs font-bold tracking-tight">VEHICLE_APPROACH</div>
+<div class="font-mono text-[9px] text-zinc-500">21:58:12 // 14.02.24</div>
+</div>
+<div class="flex gap-4">
+<div class="flex flex-col">
+<span class="text-[8px] text-zinc-600 uppercase tracking-widest">Class</span>
+<span class="text-[10px] font-mono text-zinc-300">TRANS_G4</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[8px] text-zinc-600 uppercase tracking-widest">Confidence</span>
+<span class="text-[10px] font-mono text-tertiary">92.1%</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container relative group overflow-hidden kinetic-glow">
+<div class="absolute top-2 left-2 z-10 flex flex-col gap-1">
+<span class="bg-inverse-primary text-white px-2 py-0.5 text-[8px] font-bold tracking-tighter uppercase">CRITICAL</span>
+<span class="bg-black/60 backdrop-blur-md text-white px-2 py-0.5 text-[8px] font-mono tracking-tighter">ID: TGT-9912</span>
+</div>
+<div class="aspect-square bg-zinc-900 relative">
+<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity grayscale sepia" data-alt="Thermal camera view of a drone hovering over industrial infrastructure with heat bloom effects" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBswmf_QHRfuxZvgXLjmlGrq8oDu13S7e1UmeNRdaPCZqg74V2SY0O4C9OSj4VDw5wbBSoLswjbLwDpGViko85zhELiW2OakmQ_rUoJeap1U2Fk6UrKicxsAlwAt3iofpdoQHxEKkj48g_JcRBo8j1Qvs9F53ZCu4jsYhaOoVA9vNweM1jqnzgFNwAngIWqMv4DjGxb5JjIN8DZh-tZGlsAwjJ8G-plHOWPg629oOvSt924iZkB5oHMS76LpYNsBEd2lb4U1rMtn04"/>
+<div class="absolute inset-0 scanline pointer-events-none"></div>
+<div class="absolute bottom-2 right-2">
+<span class="material-symbols-outlined text-inverse-primary text-sm" data-icon="flight_takeoff">flight_takeoff</span>
+</div>
+</div>
+<div class="p-4 border-t border-[#603e39]/10">
+<div class="flex justify-between items-start mb-2">
+<div class="font-headline text-xs font-bold tracking-tight">AERIAL_UAV_DETECTION</div>
+<div class="font-mono text-[9px] text-zinc-500">21:45:33 // 14.02.24</div>
+</div>
+<div class="flex gap-4">
+<div class="flex flex-col">
+<span class="text-[8px] text-zinc-600 uppercase tracking-widest">Class</span>
+<span class="text-[10px] font-mono text-zinc-300">DRONE_S3</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[8px] text-zinc-600 uppercase tracking-widest">Confidence</span>
+<span class="text-[10px] font-mono text-tertiary">99.9%</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container relative group overflow-hidden kinetic-glow">
+<div class="absolute top-2 left-2 z-10 flex flex-col gap-1">
+<span class="bg-zinc-800 text-zinc-300 px-2 py-0.5 text-[8px] font-bold tracking-tighter uppercase">LOW</span>
+<span class="bg-black/60 backdrop-blur-md text-white px-2 py-0.5 text-[8px] font-mono tracking-tighter">ID: TGT-0129</span>
+</div>
+<div class="aspect-square bg-zinc-900 relative">
+<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity grayscale contrast-150" data-alt="Satellite imagery overview of a industrial complex with digital overlay of sensor range circles" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3rLVCPHdFm6wb4PBM1fENKUE2bFO9ASH6dS_uiU6RNQ7vg6f6ObYEqUDK_IuDElQe3xPkmWu5cewinm-yjS67FQ4hiYaPl7BTjkCYW1yDO0kRLTr91TptB1sVRz7Y38mc4APapoe07iEyZnBUkg7sQh81b-YEFCYnDYNBGIu66skyOtKjO5awDwbS4ukLrsFfC3NwyN0jfY-YVjem6f7KJE7JMpHwnAPNcLzFCUJrmOKQHi6HEXO7kY3OzjJ5TjnouhozeydZx-o"/>
+<div class="absolute inset-0 scanline pointer-events-none"></div>
+<div class="absolute bottom-2 right-2">
+<span class="material-symbols-outlined text-zinc-500 text-sm" data-icon="public">public</span>
+</div>
+</div>
+<div class="p-4 border-t border-[#603e39]/10">
+<div class="flex justify-between items-start mb-2">
+<div class="font-headline text-xs font-bold tracking-tight">SECTOR_ANOMALY</div>
+<div class="font-mono text-[9px] text-zinc-500">21:20:01 // 14.02.24</div>
+</div>
+<div class="flex gap-4">
+<div class="flex flex-col">
+<span class="text-[8px] text-zinc-600 uppercase tracking-widest">Class</span>
+<span class="text-[10px] font-mono text-zinc-300">ENV_FLUC</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[8px] text-zinc-600 uppercase tracking-widest">Confidence</span>
+<span class="text-[10px] font-mono text-zinc-500">45.2%</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container relative group overflow-hidden kinetic-glow">
+<div class="absolute top-2 left-2 z-10 flex flex-col gap-1">
+<span class="bg-inverse-primary text-white px-2 py-0.5 text-[8px] font-bold tracking-tighter uppercase">CRITICAL</span>
+<span class="bg-black/60 backdrop-blur-md text-white px-2 py-0.5 text-[8px] font-mono tracking-tighter">ID: TGT-7762</span>
+</div>
+<div class="aspect-square bg-zinc-900 relative">
+<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity grayscale brightness-50" data-alt="Close up of a thermal camera lens reflecting a digital monitor displaying red alarm signals" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVKAMCjWpUB6VXiQYwP76xafuAMX5CaCYlunPzURpD7lgYqrgSLu2RuLxT04_LW9GBNOV9w-U2zf3uDrkQCiUfsPVYsyfdNS5e-_tIMizfQmbxflRMezV8sy40dM7X2YV7evF3KcUSsWW5j08GJgCxCC9eySFBuTU1UWDo26A4zFlZy6_Zar8Z0tQZFMQQEY9dGnDgipyr3P7FLrijgBgnz2gVQ1DTZblJhGEOE4vPGnrEKs8z9spxVEqtKTY_3soov3E21xBivSM"/>
+<div class="absolute inset-0 scanline pointer-events-none"></div>
+<div class="absolute bottom-2 right-2">
+<span class="material-symbols-outlined text-inverse-primary text-sm" data-icon="sensors_off">sensors_off</span>
+</div>
+</div>
+<div class="p-4 border-t border-[#603e39]/10">
+<div class="flex justify-between items-start mb-2">
+<div class="font-headline text-xs font-bold tracking-tight">SENSOR_MALFUNCTION</div>
+<div class="font-mono text-[9px] text-zinc-500">21:05:44 // 14.02.24</div>
+</div>
+<div class="flex gap-4">
+<div class="flex flex-col">
+<span class="text-[8px] text-zinc-600 uppercase tracking-widest">Class</span>
+<span class="text-[10px] font-mono text-zinc-300">HARDWARE</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[8px] text-zinc-600 uppercase tracking-widest">Confidence</span>
+<span class="text-[10px] font-mono text-tertiary">100%</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container relative group overflow-hidden kinetic-glow">
+<div class="absolute top-2 left-2 z-10 flex flex-col gap-1">
+<span class="bg-secondary-container text-on-secondary-container px-2 py-0.5 text-[8px] font-bold tracking-tighter uppercase">HIGH</span>
+<span class="bg-black/60 backdrop-blur-md text-white px-2 py-0.5 text-[8px] font-mono tracking-tighter">ID: TGT-2231</span>
+</div>
+<div class="aspect-square bg-zinc-900 relative">
+<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity grayscale contrast-150 saturate-0" data-alt="Digital glitch art of a human silhouette seen through a fractured surveillance screen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9oNRoBs0FBh0aap5PiIlFue0619ayZ9FdU1G4s3rnkFoWyoc4ilfqDLOeAcenkoVhbrbbfLnPOyP9wYwGkoGEOoULl8bzLrosWtJbsKQ3YxufY00le0YsDst-G1xIeKAfk0lRP7I5hw-xO5r5-iZQdcQz01BQlnqwXiawCYpcMTMB1abXwmgWzuiRRWj32nXiYRS2mCfoc_X1tomuzlXYdrj7QSOic-CWPOL5a802A97XcOWTlyGBWFUnPZKw1CDVdd8j9firEuM"/>
+<div class="absolute inset-0 scanline pointer-events-none"></div>
+<div class="absolute bottom-2 right-2">
+<span class="material-symbols-outlined text-secondary-container text-sm" data-icon="person_search">person_search</span>
+</div>
+</div>
+<div class="p-4 border-t border-[#603e39]/10">
+<div class="flex justify-between items-start mb-2">
+<div class="font-headline text-xs font-bold tracking-tight">LOITERING_DETECTED</div>
+<div class="font-mono text-[9px] text-zinc-500">20:44:19 // 14.02.24</div>
+</div>
+<div class="flex gap-4">
+<div class="flex flex-col">
+<span class="text-[8px] text-zinc-600 uppercase tracking-widest">Class</span>
+<span class="text-[10px] font-mono text-zinc-300">PERS_UNK</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[8px] text-zinc-600 uppercase tracking-widest">Confidence</span>
+<span class="text-[10px] font-mono text-tertiary">84.2%</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container relative group overflow-hidden kinetic-glow">
+<div class="absolute top-2 left-2 z-10 flex flex-col gap-1">
+<span class="bg-zinc-800 text-zinc-300 px-2 py-0.5 text-[8px] font-bold tracking-tighter uppercase">LOW</span>
+<span class="bg-black/60 backdrop-blur-md text-white px-2 py-0.5 text-[8px] font-mono tracking-tighter">ID: TGT-5501</span>
+</div>
+<div class="aspect-square bg-zinc-900 relative">
+<img class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity grayscale" data-alt="Close up of mechanical gears and robot joints with subtle red lighting in a dark factory setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9KJ6ywISOcUpsMSI5iCl7fQNG-hBUKQ4jRnt3bUaikex23MoMI2S0svrprF7QJ6LtPtrWVykco7CwiXGb9cf1e808r5vrYPca3u_wfE7K6kedhYFe5iJsJ0HRtaedybeig3u2hpkYYWjU4arEakvUhknI46aw2sp4JZ6LO3VHRbA9UXzijX6wMELGGGX2dXA09pyBENDidGmqe6tESFX1PTGVZH0_bZ_xK9aLW--YSs3iESFftsSp_p3TRDe4UKa1-iiltl4WIJY"/>
+<div class="absolute inset-0 scanline pointer-events-none"></div>
+<div class="absolute bottom-2 right-2">
+<span class="material-symbols-outlined text-zinc-500 text-sm" data-icon="settings_remote">settings_remote</span>
+</div>
+</div>
+<div class="p-4 border-t border-[#603e39]/10">
+<div class="flex justify-between items-start mb-2">
+<div class="font-headline text-xs font-bold tracking-tight">ROBOTIC_MOVEMENT</div>
+<div class="font-mono text-[9px] text-zinc-500">20:30:05 // 14.02.24</div>
+</div>
+<div class="flex gap-4">
+<div class="flex flex-col">
+<span class="text-[8px] text-zinc-600 uppercase tracking-widest">Class</span>
+<span class="text-[10px] font-mono text-zinc-300">AUTO_UNIT</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[8px] text-zinc-600 uppercase tracking-widest">Confidence</span>
+<span class="text-[10px] font-mono text-tertiary">91.0%</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low flex flex-col items-center justify-center border-dashed border-2 border-[#603e39]/20 p-8 min-h-[300px]">
+<span class="material-symbols-outlined text-3xl text-zinc-700 mb-4" data-icon="refresh">refresh</span>
+<span class="font-headline text-[10px] text-zinc-500 uppercase tracking-widest">Awaiting New Data...</span>
+<span class="font-mono text-[8px] text-zinc-700 mt-2">NEXT REFRESH IN 15S</span>
+</div>
+</div>
+</main>
+<footer class="bg-[#0e0e10] border-t-[0.5px] border-[#603e39]/15 shadow-none rounded-none fixed bottom-0 w-full z-50 flex justify-between items-center px-4 py-1.5 h-8">
+<div class="flex gap-4">
+<span class="font-['Inter'] text-[9px] font-mono tracking-tighter text-[#4edea3] flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-[#4edea3] rounded-full animate-pulse"></span>
+                SYSTEM_READY
+            </span>
+<span class="font-['Inter'] text-[9px] font-mono tracking-tighter text-zinc-600">FPS: 120 | GPU_LOAD: 42% | LATENCY: 14MS</span>
+</div>
+<div class="flex gap-4">
+<a class="font-['Inter'] text-[9px] font-mono tracking-tighter text-zinc-600 hover:text-[#4edea3] cursor-help" href="#">Diagnostics</a>
+<a class="font-['Inter'] text-[9px] font-mono tracking-tighter text-zinc-600 hover:text-[#4edea3] cursor-help" href="#">Network Status</a>
+<a class="font-['Inter'] text-[9px] font-mono tracking-tighter text-zinc-600 hover:text-[#4edea3] cursor-help" href="#">Encryption: AES-256</a>
+</div>
+</footer>
+</body></html>
