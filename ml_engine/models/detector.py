@@ -10,12 +10,14 @@ from config import (
     THERMAL_MODEL_PATH,
     USE_CUSTOM_MODELS,
     WEAPON_CLASSES,
-    THERMAL_CLASSES
+    THERMAL_CLASSES,
+    DEVICE
 )
 
 class ObjectDetector:
     def __init__(self, mode="standard"):
         self.mode = mode
+        self.device = DEVICE
         self.load_model(mode)
         self.frames_processed = 0
 
@@ -34,7 +36,8 @@ class ObjectDetector:
             self.class_map = CLASS_NAMES
             
         self.model = YOLO(self.model_source)
-        print(f"Loaded {mode} model: {self.model_source}")
+        self.model.to(self.device)
+        print(f"Loaded {mode} model on {self.device}: {self.model_source}")
 
     def detect(self, frame) -> list[dict]:
         try:
@@ -46,6 +49,7 @@ class ObjectDetector:
                 frame,
                 conf=CONFIDENCE_THRESHOLD,
                 iou=IOU_THRESHOLD,
+                device=self.device,
                 verbose=False,
                 **kwargs
             )

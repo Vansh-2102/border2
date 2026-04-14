@@ -1,15 +1,50 @@
+import torch
+
+# Compute Device (GPU/CPU)
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
 CAMERA_SOURCE = 0
 FRAME_WIDTH = 1280
 FRAME_HEIGHT = 720
 FRAME_SKIP = 2
+# Metric Distance Estimation Constants
+CALIBRATION_FILE = "calibration.npz"
+AVG_PERSON_HEIGHT_M = 1.7 # meters
+WEAPON_SIZES_M = {
+    "Pistol": 0.2, 
+    "Rifle": 0.8, 
+    "Knife": 0.3,
+    "Grenade": 0.1,
+    "Missile": 1.5
+}
+DEFAULT_FOCAL_LENGTH_PX = 950.0 # Fallback if calibration is missing
+
+# Real-world ground plane mapping
+# Example 4 points on ground in image space (normalized 0-1)
+# and their real-world coordinates in meters (X, Y)
+GROUND_PLANE_POINTS_IMG = [
+    [0.45, 0.45], # Top-left on ground
+    [0.55, 0.45], # Top-right on ground
+    [0.9, 0.95],  # Bottom-right on ground
+    [0.1, 0.95]   # Bottom-left on ground
+]
+GROUND_PLANE_POINTS_WORLD = [
+    [0.0, 10.0],  # 10m ahead, 0m center
+    [5.0, 10.0],  # 10m ahead, 5m right
+    [5.0, 1.0],   # 1m ahead, 5m right
+    [0.0, 1.0]    # 1m ahead, 0m center
+]
+
 ZONES = {
     "ZONE_1": {
         "id": "ZONE_1",
-        "name": "GREEN ZONE (TOP)",
+        "name": "GREEN ZONE (FAR)",
         "x_start": 0.0,
         "x_end": 1.0,
         "y_start": 0.0,
         "y_end": 0.333,
+        "z_start": 5.0,
+        "z_end": 40.0,
         "color_bgr": (0, 200, 0),
         "threat_multiplier": 1.0,
         "alert_threshold": 0.65,
@@ -23,6 +58,8 @@ ZONES = {
         "x_end": 1.0,
         "y_start": 0.333,
         "y_end": 0.666,
+        "z_start": 3.0,
+        "z_end": 5.0,
         "color_bgr": (0, 200, 255),
         "threat_multiplier": 1.5,
         "alert_threshold": 0.40,
@@ -31,11 +68,13 @@ ZONES = {
     },
     "ZONE_3": {
         "id": "ZONE_3",
-        "name": "RED ZONE (BTM)",
+        "name": "RED ZONE (CLOSE)",
         "x_start": 0.0,
         "x_end": 1.0,
         "y_start": 0.666,
         "y_end": 1.0,
+        "z_start": 0.0,
+        "z_end": 3.0,
         "color_bgr": (0, 0, 255),
         "threat_multiplier": 2.5,
         "alert_threshold": 0.15,

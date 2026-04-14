@@ -11,29 +11,53 @@ class Visualizer:
         overlay = frame.copy()
         h, w = frame.shape[:2]
         
-        # Draw zones based on their defined 2D coordinates in config
-        for zid, z in ZONES.items():
-            x1, x2 = int(z["x_start"] * w), int(z["x_end"] * w)
-            y1, y2 = int(z["y_start"] * h), int(z["y_end"] * h)
+        # We define full-width horizontal zones to cover the entire camera feed
+        # ZONE_1 (FAR): Top part
+        z1_pts = np.array([
+            [0, 0], 
+            [w, 0],
+            [w, int(h * 0.33)],
+            [0, int(h * 0.33)]
+        ], np.int32)
+        
+        # ZONE_2 (MID): Middle part
+        z2_pts = np.array([
+            [0, int(h * 0.33)],
+            [w, int(h * 0.33)],
+            [w, int(h * 0.66)],
+            [0, int(h * 0.66)]
+        ], np.int32)
+        
+        # ZONE_3 (CLOSE): Bottom part
+        z3_pts = np.array([
+            [0, int(h * 0.66)],
+            [w, int(h * 0.66)],
+            [w, h],
+            [0, h]
+        ], np.int32)
+        
+        zone_polys = {
+            "ZONE_1": z1_pts,
+            "ZONE_2": z2_pts,
+            "ZONE_3": z3_pts
+        }
+        
+        for zid, pts in zone_polys.items():
+            z = ZONES[zid]
+            cv2.fillPoly(overlay, [pts], z["color_bgr"])
             
-            # Draw semi-transparent background for each zone
-            cv2.rectangle(overlay, (x1, y1), (x2, y2), z["color_bgr"], -1)
-            
-            # Position labels slightly offset from the top-left of each zone
-            label_pos = (x1 + 15, y1 + 35)
-            cv2.putText(overlay, z["name"], label_pos, self.font, 0.6, z["color_bgr"], 2)
-            
+            # Label at the left side of the zone
+            label_x = 20
+            label_y = pts[0][1] + 30
+            z_range = f" ({z['z_start']}-{z['z_end']}m)"
+            cv2.putText(overlay, z["name"] + z_range, (label_x, label_y), self.font, 0.6, (255, 255, 255), 2)
+        
         frame = cv2.addWeighted(overlay, 0.12, frame, 0.88, 0)
         
-        # Draw explicit horizontal grid lines to perfectly separate the three stacked zones
-        # Line 1: Top (33%)
-        h1 = int(h * 0.333)
-        cv2.line(frame, (0, h1), (w, h1), (255, 255, 255), 2)
-        
-        # Line 2: Mid (66%)
-        h2 = int(h * 0.666)
-        cv2.line(frame, (0, h2), (w, h2), (255, 255, 255), 2)
-        
+        # Draw explicit horizontal grid lines to separate the three stacked zones
+        cv2.line(frame, (0, int(h * 0.33)), (w, int(h * 0.33)), (255, 255, 255), 1)
+        cv2.line(frame, (0, int(h * 0.66)), (w, int(h * 0.66)), (255, 255, 255), 1)
+            
         return frame
 
     def draw_detection(self, frame, det) -> np.ndarray:
@@ -42,7 +66,10 @@ class Visualizer:
         c = colors.get(det.get("threat_level", "NORMAL"), (200, 200, 200))
         th = 3 if det.get("threat_level") == "HIGH" else 2
         cv2.rectangle(frame, (x1, y1), (x2, y2), c, th)
-        lbl = f"{det.get('class_name', '?')}#{det.get('track_id', 0)} {det.get('behavior_score', 0):.2f}"
+        
+        dist_str = f" {det.get('distance', 0):.1f}m" if "distance" in det else ""
+        lbl = f"{det.get('class_name', '?')}#{det.get('track_id', 0)}{dist_str}"
+        
         (tw, tsh), _ = cv2.getTextSize(lbl, self.font, 0.52, 1)
         cv2.rectangle(frame, (x1, y1 - tsh - 8), (x1 + tw + 4, y1), c, -1)
         cv2.putText(frame, lbl, (x1 + 2, y1 - 4), self.font, 0.52, (255, 255, 255), 1)
@@ -88,10 +115,65 @@ class Visualizer:
             cv2.putText(frame, l, (w - 130, 22 + i * 18), self.font, 0.50, (255, 255, 255), 1)
         return frame
 
+    def draw_3d_view(self, frame, detections) -> np.ndarray:
+        h, w = frame.shape[:2]
+        # Top-down radar view size
+        view_w, view_h = 250, 250
+        view_x, view_y = w - view_w - 10, h - view_h - 10
+        
+        # Radar center and scale
+        # Assume we show 10m x 10m area
+        max_dist = 10.0
+        scale = view_w / max_dist
+        
+        # Background
+        cv2.rectangle(frame, (view_x, view_y), (view_x + view_w, view_y + view_h), (20, 20, 20), -1)
+        cv2.rectangle(frame, (view_x, view_y), (view_x + view_w, view_y + view_h), (100, 100, 100), 1)
+        cv2.putText(frame, "REAL-WORLD MAP (METERS)", (view_x + 5, view_y + 15), self.font, 0.4, (255, 255, 255), 1)
+        
+        # Draw Distance Circles
+        for r in [2, 5, 8]:
+            radius = int(r * scale)
+            cv2.circle(frame, (view_x + view_w // 2, view_y + view_h), radius, (50, 50, 50), 1)
+            cv2.putText(frame, f"{r}m", (view_x + view_w // 2 + radius, view_y + view_h), self.font, 0.3, (100, 100, 100), 1)
+
+        # Draw zones in the 3D radar view
+        for zid, z in ZONES.items():
+            z1, z2 = z.get("z_start", 0), z.get("z_end", 100)
+            y1 = view_y + view_h - int((z1 / max_dist) * view_h)
+            y2 = view_y + view_h - int((z2 / max_dist) * view_h)
+            y1, y2 = max(view_y, min(view_y + view_h, y1)), max(view_y, min(view_y + view_h, y2))
+            
+            overlay = frame.copy()
+            cv2.rectangle(overlay, (view_x, y2), (view_x + view_w, y1), z["color_bgr"], -1)
+            frame = cv2.addWeighted(overlay, 0.15, frame, 0.85, 0)
+            
+        # Draw camera position (origin)
+        cv2.circle(frame, (view_x + view_w // 2, view_y + view_h), 6, (0, 255, 255), -1)
+        
+        # Draw detections in 3D radar view using world_pos
+        for det in detections:
+            world_pos = det.get("world_pos", (0, 0))
+            wx, wy = world_pos # X is horizontal distance from center, Y is depth
+            
+            # Map world X, Y to radar view pixels
+            # Radar center-bottom is (0,0) in world
+            dx = view_x + view_w // 2 + int(wx * scale)
+            dy = view_y + view_h - int(wy * scale)
+            
+            if view_x < dx < view_x + view_w and view_y < dy < view_y + view_h:
+                colors = {"HIGH": (0, 0, 255), "SUSPICIOUS": (0, 165, 255), "NORMAL": (0, 200, 0)}
+                c = colors.get(det.get("threat_level", "NORMAL"), (200, 200, 200))
+                cv2.circle(frame, (dx, dy), 5, c, -1)
+                cv2.putText(frame, f"ID:{det.get('track_id', '')}", (dx + 7, dy), self.font, 0.35, (255, 255, 255), 1)
+            
+        return frame
+
     def draw_all(self, frame, result, fps=0, active_alerts=None) -> np.ndarray:
         frame = self.draw_zones(frame)
         for d in result.get("detections", []):
             frame = self.draw_detection(frame, d)
+        
         if active_alerts:
             frame = self.draw_alerts_list(frame, active_alerts)
         return self.draw_stats_overlay(frame, result.get("threat_counts", {}), fps)
